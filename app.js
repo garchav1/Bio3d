@@ -642,13 +642,19 @@ document.getElementById("backupDataBtn").onclick=()=>{
  status.textContent="Respaldo exportado.";
 };
 document.getElementById("restoreDataFile").onchange=async e=>{
- const file=e.target.files?.[0];if(!file)return;
- try{
-   const payload=JSON.parse(await file.text());
-   if(!payload?.data||typeof payload.data!=="object")throw new Error("Formato inválido");
-   Object.entries(payload.data).forEach(([k,v])=>{if(BIO3D_DATA_KEYS.includes(k)&&typeof v==="string")localStorage.setItem(k,v)});
-   status.textContent="Respaldo importado. Recarga Bio3D para aplicar todos los datos.";
- });}catch(err){console.error(err);status.textContent="No se pudo importar el respaldo."}
+  const file=e.target.files?.[0];
+  if(!file)return;
+  try{
+    const payload=JSON.parse(await file.text());
+    if(!payload?.data || typeof payload.data!=="object") throw new Error("Formato inválido");
+    Object.entries(payload.data).forEach(([k,v])=>{
+      if(BIO3D_DATA_KEYS.includes(k) && typeof v==="string") localStorage.setItem(k,v);
+    });
+    status.textContent="Respaldo importado. Recarga Bio3D para aplicar todos los datos.";
+  }catch(err){
+    console.error(err);
+    status.textContent="No se pudo importar el respaldo.";
+  }
 };
 
 let lowPower=false;
