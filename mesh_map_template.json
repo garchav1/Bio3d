@@ -1,0 +1,26 @@
+[
+  {
+    "mesh_name": "EXAMPLE_Femur_L",
+    "recognized_key": "femur",
+    "recognized_label": "Fémur",
+    "side": "left"
+  },
+  {
+    "mesh_name": "EXAMPLE_Femur_R",
+    "recognized_key": "femur",
+    "recognized_label": "Fémur",
+    "side": "right"
+  },
+  {
+    "mesh_name": "EXAMPLE_Tibia_L",
+    "recognized_key": "tibia",
+    "recognized_label": "Tibia",
+    "side": "left"
+  },
+  {
+    "mesh_name": "EXAMPLE_Tibia_R",
+    "recognized_key": "tibia",
+    "recognized_label": "Tibia",
+    "side": "right"
+  }
+]

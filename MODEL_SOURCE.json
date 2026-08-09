@@ -1,0 +1,17 @@
+{
+  "version": "1.4-beta",
+  "target_external_asset": {
+    "project": "Z-Anatomy",
+    "repository": "LluisV/Z-Anatomy",
+    "branch": "PC-Version",
+    "path": "Resources/Models/FBX/SkeletalSystem100.fbx",
+    "reported_size_mb": 39.4,
+    "license_declared_by_repository": "CC BY-SA 4.0",
+    "bundled": false
+  },
+  "required_attribution": [
+    "Z-Anatomy - The libre 3D atlas of anatomy - CC-BY-SA 4.0",
+    "BodyParts3D - The Database Center for Life Science - CC-BY-SA 2.1 Japan"
+  ],
+  "note": "The model is not bundled in Bio3D v1.4 Beta. Import it locally after obtaining it from the official Z-Anatomy repository and verify attribution obligations for the exact redistributed asset."
+}
