@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bio3D v3.4 Android PWA</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#071720" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+</head>
+<body>
+<div id="welcomeScreen" class="welcome-screen">
+    <div class="welcome-card">
+      <img src="icon-192.png" class="welcome-logo" alt="Bio3D">
+      <h1>Bio3D</h1>
+      <p>Anatomía 3D interactiva para aprender, explorar y enseñar.</p>
+      <div class="mode-grid">
+        <button id="studentModeBtn"><b>🎓 Estudiante</b><span>Explorar, aprender y completar quizzes</span></button>
+        <button id="teacherModeBtn"><b>🧑‍🏫 Docente</b><span>Guiar clases y revisar resultados</span></button>
+      </div>
+      <small>Bio3D v3.4 Android PWA</small>
+    </div>
+  </div>
+  <header>
+    <div class="brand">Bio3D <span>v3.4 Android</span></div>
+    <div class="mode-status"><span id="modeBadge">🎓 Estudiante</span><button id="changeModeBtn">Cambiar modo</button></div>
+    <div class="header-tools">
+      <select id="language" aria-label="Idioma">
+        <option value="es">Español</option><option value="en">English</option>
+        <option value="it">Italiano</option><option value="ar">العربية</option>
+        <option value="zh">中文</option>
+      </select>
+      <div class="level">
+        <button id="secondaryBtn" class="active" data-i18n="secondary">Secundaria</button>
+        <button id="universityBtn" data-i18n="university">Universidad</button>
+      </div>
+    </div>
+  <button id="installBtn" class="install-btn" hidden>⬇ Instalar</button>
+  </header>
+
+  <main>
+    <aside class="left-panel">
+      <h3>Módulos</h3>
+      <div class="module-grid">
+        <button class="module active" data-module="skeletal">🦴<span>Esquelético</span></button>
+        <button class="module" data-module="muscular">💪<span>Muscular</span></button>
+        <button class="module" data-module="organs">🫀<span>Órganos</span></button>
+        <button class="module" data-module="nervous">🧠<span>Nervioso</span></button>
+      </div>
+      <h3 data-i18n="systems">Sistemas</h3>
+      <button class="system active">🦴 <span data-i18n="skeleton">Esqueleto</span></button>
+      <button class="system" disabled>💪 <span data-i18n="muscles">Músculos</span></button>
+      <button class="system" disabled>🫀 <span data-i18n="organs">Órganos</span></button>
+      <button class="system" disabled>🧠 <span data-i18n="nervous">Nervioso</span></button>
+      <button class="system" disabled>🔬 <span data-i18n="tissues">Tejidos</span></button>
+
+      <h3 class="section-title" data-i18n="boneAtlas">Atlas óseo</h3>
+      <input id="boneSearch" class="search" placeholder="Buscar hueso…" data-i18n-placeholder="searchBone" autocomplete="off">
+      <button id="loadModelBtn" class="model-button">📦 <span data-i18n="loadModel">Cargar modelo GLB/GLTF/FBX</span></button>
+      <input id="modelFile" type="file" accept=".glb,.gltf,.fbx" hidden>
+      <h3 class="section-title">Sistema muscular</h3>
+      <select id="muscleLayer">
+        <option value="superficial">Capa superficial</option>
+        <option value="deep">Capa profunda</option>
+      </select>
+      <select id="muscleSelect">
+        <option value="">Seleccionar músculo…</option>
+        <option value="deltoid">Deltoides</option>
+        <option value="pectoralis_major">Pectoral mayor</option>
+        <option value="biceps_brachii">Bíceps braquial</option>
+        <option value="triceps_brachii">Tríceps braquial</option>
+        <option value="rectus_abdominis">Recto abdominal</option>
+        <option value="gluteus_maximus">Glúteo mayor</option>
+        <option value="quadriceps">Cuádriceps</option>
+        <option value="hamstrings">Isquiotibiales</option>
+        <option value="gastrocnemius">Gastrocnemio</option>
+        <option value="latissimus_dorsi">Dorsal ancho</option>
+      </select>
+      <button id="showMuscleBtn">💪 Mostrar músculo</button>
+      <button id="showMuscleRelationsBtn">🔗 Ver relación músculo‑hueso</button>
+      <button id="muscleDetailsBtn">📚 Origen · inserción · acción</button>
+      <button id="showAttachmentsBtn">📍 Mostrar origen e inserción</button>
+      <button id="showTendonsBtn">〰 Mostrar tendones</button>
+      <button id="animateMuscleBtn">▶ Animar contracción</button>
+      <label class="model-load muscle-load">📦 Cargar modelo muscular GLB/GLTF/FBX
+        <input id="muscleModelFile" type="file" accept=".glb,.gltf,.fbx">
+      </label>
+      <button id="analyzeMuscleModelBtn">🔎 Analizar modelo muscular</button>
+      <button id="toggleProceduralMusclesBtn">◉ Ocultar músculos demo</button>
+      <div id="muscleModelStatus" class="mesh-report">Modelo muscular: geometría demostrativa</div>
+      <div id="muscleAcademic" class="muscle-academic">Selecciona un músculo para consultar anatomía funcional.</div>
+
+      <h3 class="section-title">Instalar en Android</h3>
+      <div class="device-card">
+        <div><span>Instalación</span><b id="installStatus">Comprobando…</b></div>
+      </div>
+      <button id="installAppBtn" disabled>📲 Instalar Bio3D</button>
+      <div id="installHelp" class="mesh-report">Abre Bio3D en Chrome mediante HTTPS. Cuando Android permita la instalación, se activará el botón.</div>
+
+      <h3 class="section-title">Conexión y modo offline</h3>
+      <div class="device-card">
+        <div><span>Red</span><b id="networkStatus">—</b></div>
+        <div><span>Aplicación</span><b id="runtimeStatus">Iniciando…</b></div>
+        <div><span>Caché</span><b id="cacheStatus">—</b></div>
+      </div>
+      <button id="checkOfflineBtn">📦 Comprobar caché offline</button>
+      <button id="retryRuntimeBtn">↻ Reintentar carga</button>
+      <div id="offlineHelp" class="mesh-report">El primer uso necesita Internet para obtener Three.js. Después, el Service Worker intentará reutilizar esas dependencias desde caché.</div>
+
+      <h3 class="section-title">Prueba de dispositivo</h3>
+      <div class="device-card">
+        <div><span>Navegador</span><b id="deviceBrowser">—</b></div>
+        <div><span>Pantalla</span><b id="deviceScreen">—</b></div>
+        <div><span>Táctil</span><b id="deviceTouch">—</b></div>
+        <div><span>WebGL</span><b id="deviceWebgl">—</b></div>
+        <div><span>Micrófono/voz</span><b id="deviceVoice">—</b></div>
+        <div><span>Memoria aprox.</span><b id="deviceMemory">—</b></div>
+      </div>
+      <button id="runDeviceTestBtn">📱 Ejecutar prueba de dispositivo</button>
+      <button id="touchTestBtn">☝️ Probar toque</button>
+      <button id="voiceTestBtn">🎙️ Probar voz</button>
+      <textarea id="issueNotes" rows="4" placeholder="Describe cualquier problema observado…"></textarea>
+      <button id="saveIssueBtn">📝 Guardar incidencia</button>
+      <button id="exportDeviceReportBtn">📄 Exportar informe técnico</button>
+      <div id="deviceTestStatus" class="mesh-report">Aún no se ha ejecutado la prueba.</div>
+
+      <h3 class="section-title">Prueba para aula</h3>
+      <div class="test-card">
+        <label><input class="rc-test" type="checkbox" data-test="3d"> Modelo 3D visible</label>
+        <label><input class="rc-test" type="checkbox" data-test="layers"> Capas anatómicas</label>
+        <label><input class="rc-test" type="checkbox" data-test="tour"> Recorrido guiado</label>
+        <label><input class="rc-test" type="checkbox" data-test="quiz"> Quiz y puntuación</label>
+        <label><input class="rc-test" type="checkbox" data-test="teacher"> Modo profesor</label>
+        <label><input class="rc-test" type="checkbox" data-test="backup"> Respaldo de datos</label>
+        <label><input class="rc-test" type="checkbox" data-test="mobile"> Vista móvil</label>
+      </div>
+      <div id="rcReadiness" class="mesh-report">Preparación: 0/7 pruebas verificadas</div>
+      <button id="resetRcTestsBtn">↺ Reiniciar pruebas</button>
+
+      <h3 class="section-title">Estado de la beta</h3>
+      <div class="diagnostics-card">
+        <div><span>Render 3D</span><b id="diagRenderer">✓</b></div>
+        <div><span>Voz</span><b id="diagVoice">—</b></div>
+        <div><span>Almacenamiento</span><b id="diagStorage">—</b></div>
+        <div><span>Modelo externo</span><b id="diagModel">No cargado</b></div>
+      </div>
+      <button id="runDiagnosticsBtn">🧪 Ejecutar diagnóstico</button>
+      <button id="backupDataBtn">💾 Exportar respaldo</button>
+      <label class="model-load">📥 Importar respaldo
+        <input id="restoreDataFile" type="file" accept=".json">
+      </label>
+      <button id="lowPowerBtn">⚙️ Modo rendimiento</button>
+
+      <h3 class="section-title">Aula Bio3D</h3>
+      <select id="classMode">
+        <option value="student">Modo estudiante</option>
+        <option value="teacher">Modo profesor</option>
+      </select>
+      <input id="studentName" placeholder="Nombre del estudiante">
+      <button id="saveStudentBtn">👤 Guardar estudiante</button>
+      <div class="progress-wrap">
+        <div class="progress-head"><span>Progreso</span><span id="progressText">0%</span></div>
+        <div class="progress-bar"><div id="progressFill"></div></div>
+      </div>
+      <div id="scoreCard" class="mesh-report">Preguntas: 0 · Correctas: 0 · Puntos: 0</div>
+      <button id="resetProgressBtn">↺ Reiniciar progreso</button>
+      <div id="teacherPanel" class="teacher-panel">
+        <b>Panel del profesor</b>
+        <div id="teacherStats">Sin actividad todavía.</div>
+
+        <h4>Crear lección</h4>
+        <input id="lessonTitle" placeholder="Título de la lección">
+        <select id="lessonSystem">
+          <option value="skeletal">Sistema esquelético</option>
+          <option value="muscular">Sistema muscular</option>
+          <option value="nervous">Sistema nervioso</option>
+          <option value="cardio">Cardiovascular</option>
+          <option value="respiratory">Respiratorio</option>
+          <option value="digestive">Digestivo</option>
+          <option value="urinary">Urinario</option>
+          <option value="endocrine">Endocrino</option>
+        </select>
+        <textarea id="lessonObjective" rows="3" placeholder="Objetivo de aprendizaje"></textarea>
+        <button id="createLessonBtn">＋ Crear lección</button>
+        <select id="lessonList"><option value="">Seleccionar lección…</option></select>
+        <button id="startLessonBtn">▶ Iniciar lección</button>
+        <button id="completeLessonBtn">✓ Marcar completada</button>
+        <div id="lessonStatus" class="mesh-report">Sin lección activa.</div>
+
+        <h4>Historial</h4>
+        <div id="historyBox" class="history-box">Todavía no hay resultados.</div>
+        <button id="exportCsvBtn">📊 Exportar CSV</button>
+        <button id="exportProgressBtn">📄 Exportar progreso</button>
+      </div>
+
+      <h3 class="section-title">Recorrido guiado</h3>
+      <select id="tourSelect">
+        <option value="whole_body">Cuerpo completo</option>
+        <option value="skeletal">Sistema esquelético</option>
+        <option value="muscular">Sistema muscular</option>
+        <option value="nervous">Sistema nervioso</option>
+        <option value="organs">Órganos internos</option>
+        <option value="urinary">Sistema urinario</option>
+      </select>
+      <button id="startTourBtn">▶ Iniciar recorrido</button>
+      <div class="tour-actions">
+        <button id="tourPrevBtn">← Anterior</button>
+        <button id="tourNextBtn">Siguiente →</button>
+      </div>
+      <div id="tourStatus" class="mesh-report">Recorrido detenido.</div>
+      <button id="tourQuizBtn">📝 Pregunta del recorrido</button>
+      <div id="quizBox" class="quiz-box">
+        <div id="quizQuestion">Completa un recorrido para activar preguntas.</div>
+        <div id="quizAnswers"></div>
+        <div id="quizFeedback"></div>
+      </div>
+
+      <h3 class="section-title">Sistema endocrino</h3>
+      <select id="endocrineSelect">
+        <option value="">Seleccionar glándula…</option>
+        <option value="pituitary">Hipófisis</option>
+        <option value="thyroid">Tiroides</option>
+        <option value="adrenals">Suprarrenales</option>
+        <option value="pancreas">Páncreas endocrino</option>
+      </select>
+      <button id="showEndocrineBtn">🧪 Mostrar glándula</button>
+
+      <h3 class="section-title">Sistema urinario</h3>
+      <select id="urinarySelect">
+        <option value="">Seleccionar estructura…</option>
+        <option value="kidneys">Riñones</option>
+        <option value="ureters">Uréteres</option>
+        <option value="bladder">Vejiga</option>
+        <option value="urethra">Uretra</option>
+      </select>
+      <button id="showUrinaryBtn">💧 Mostrar urinario</button>
+
+      <h3 class="section-title">Cuerpo completo multicapa</h3>
+      <select id="layerPreset">
+        <option value="all">Todo el cuerpo</option>
+        <option value="skeleton">Solo esqueleto</option>
+        <option value="musculoskeletal">Músculo + esqueleto</option>
+        <option value="neuro">Sistema nervioso</option>
+        <option value="cardio">Circulación + corazón</option>
+        <option value="viscera">Órganos internos</option>
+      </select>
+      <button id="applyLayerPresetBtn">🧬 Aplicar vista</button>
+      <div class="opacity-grid">
+        <label>Esqueleto <input id="opacitySkeleton" type="range" min="0" max="100" value="100"></label>
+        <label>Músculos <input id="opacityMuscle" type="range" min="0" max="100" value="85"></label>
+        <label>Nervios <input id="opacityNerve" type="range" min="0" max="100" value="100"></label>
+        <label>Circulación <input id="opacityCirculation" type="range" min="0" max="100" value="100"></label>
+        <label>Órganos <input id="opacityOrgans" type="range" min="0" max="100" value="90"></label>
+      </div>
+      <button id="resetLayersBtn">↺ Restablecer capas</button>
+
+      <h3 class="section-title">Sistema nervioso central</h3>
+      <select id="cnsSelect">
+        <option value="">Seleccionar estructura…</option>
+        <option value="brain">Cerebro</option>
+        <option value="cerebellum">Cerebelo</option>
+        <option value="brainstem">Tronco encefálico</option>
+        <option value="spinal_cord">Médula espinal</option>
+      </select>
+      <button id="showCnsBtn">🧠 Mostrar estructura</button>
+
+      <h3 class="section-title">Vías respiratorias</h3>
+      <select id="respSelect">
+        <option value="">Seleccionar estructura…</option>
+        <option value="trachea">Tráquea</option>
+        <option value="bronchi">Bronquios principales</option>
+        <option value="airway_tree">Árbol respiratorio</option>
+      </select>
+      <button id="showRespBtn">🫁 Mostrar respiratorio</button>
+
+      <h3 class="section-title">Aparato digestivo</h3>
+      <select id="digestSelect">
+        <option value="">Seleccionar estructura…</option>
+        <option value="esophagus">Esófago</option>
+        <option value="stomach">Estómago</option>
+        <option value="small_intestine">Intestino delgado</option>
+        <option value="large_intestine">Intestino grueso</option>
+        <option value="liver">Hígado</option>
+      </select>
+      <button id="showDigestBtn">🍽 Mostrar digestivo</button>
+
+      <h3 class="section-title">Órganos internos</h3>
+      <select id="organSelect">
+        <option value="">Seleccionar órgano…</option>
+        <option value="heart">Corazón</option>
+        <option value="lungs">Pulmones</option>
+        <option value="liver">Hígado</option>
+        <option value="stomach">Estómago</option>
+        <option value="kidneys">Riñones</option>
+      </select>
+      <button id="showOrganBtn">🫀 Mostrar órgano</button>
+      <button id="animateHeartBtn">♥ Animar corazón</button>
+
+      <h3 class="section-title">Sistema circulatorio</h3>
+      <select id="vesselSelect">
+        <option value="">Seleccionar vaso…</option>
+        <option value="aorta">Aorta</option>
+        <option value="vena_cava">Venas cavas</option>
+        <option value="pulmonary">Vasos pulmonares</option>
+      </select>
+      <button id="showVesselBtn">🩸 Mostrar vasos</button>
+      <button id="toggleCirculationBtn">◉ Mostrar/ocultar circulación</button>
+
+      <h3 class="section-title">Sistema nervioso</h3>
+      <select id="nerveSelect">
+        <option value="">Seleccionar nervio…</option>
+        <option value="axillary">Nervio axilar</option>
+        <option value="musculocutaneous">Nervio musculocutáneo</option>
+        <option value="radial">Nervio radial</option>
+        <option value="median">Nervio mediano</option>
+        <option value="ulnar">Nervio ulnar</option>
+        <option value="femoral">Nervio femoral</option>
+        <option value="sciatic">Nervio ciático</option>
+        <option value="tibial">Nervio tibial</option>
+      </select>
+      <button id="showNerveBtn">⚡ Mostrar nervio</button>
+      <button id="toggleNervesBtn">◉ Mostrar/ocultar nervios</button>
+
+      <h3 class="section-title">Capas anatómicas</h3>
+      <div class="layer-controls">
+        <label><input id="layerSkeleton" type="checkbox" checked> Esqueleto</label>
+        <label><input id="layerJoints" type="checkbox" checked> Articulaciones</label>
+        <label><input id="layerSutures" type="checkbox" checked> Suturas</label>
+      </div>
+      <select id="jointSelect">
+        <option value="">Articulación…</option>
+        <option value="shoulder">Hombro</option>
+        <option value="elbow">Codo</option>
+        <option value="wrist">Muñeca</option>
+        <option value="hip">Cadera</option>
+        <option value="knee">Rodilla</option>
+        <option value="ankle">Tobillo</option>
+      </select>
+      <button id="showJointBtn">🦴 Mostrar articulación</button>
+      <select id="sutureSelect">
+        <option value="">Sutura craneal…</option>
+        <option value="coronal">Coronal</option>
+        <option value="sagittal">Sagital</option>
+        <option value="lambdoid">Lambdoidea</option>
+        <option value="squamous">Escamosa</option>
+      </select>
+      <button id="showSutureBtn">💀 Mostrar sutura</button>
+
+      <h3 class="section-title">Atlas detallado</h3>
+      <select id="detailRegion">
+        <option value="">Seleccionar región…</option>
+        <option value="spine">Vértebras</option>
+        <option value="ribs">Costillas</option>
+        <option value="hand">Mano</option>
+        <option value="foot">Pie</option>
+        <option value="phalanges_hand">Falanges de la mano</option>
+        <option value="phalanges_foot">Falanges del pie</option>
+        <option value="axial_lower">Sacro y cóccix</option>
+        <option value="skull">Cráneo y cara</option>
+      </select>
+      <select id="detailStructure">
+        <option value="">Seleccionar estructura…</option>
+      </select>
+      <button id="selectDetailBtn">🔎 Mostrar estructura</button>
+
+      <h3 class="section-title">Favoritos</h3>
+      <div id="favoritesList" class="favorites-list"><small>Aún no hay favoritos.</small></div>
+      <div class="model-note"><span data-i18n="modelNote">Puedes sustituir el esqueleto procedural por un modelo anatómico 3D propio.</span></div>
+      <div class="model-quality">
+        <strong>Modelo anatómico</strong>
+        <div id="modelQualityStatus">Demo procedural activa</div>
+        <button id="inspectModelBtn">🔎 Analizar modelo</button>
+        <button id="fitModelBtn">◎ Centrar modelo</button>
+        <div class="side-controls">
+          <button id="leftSideBtn">← Izquierdo</button>
+          <button id="rightSideBtn">Derecho →</button>
+        </div>
+        <small>v1.3 reconoce lateralidad y añade un perfil de compatibilidad para modelos anatómicos abiertos.</small>
+        <select id="modelProfile">
+          <option value="generic">Perfil genérico GLB/GLTF</option>
+          <option value="zanatomy">Perfil Z-Anatomy</option>
+        </select>
+        <button id="licenseInfoBtn">⚖️ Licencia y atribución</button>
+        <button id="exportMeshMapBtn">🧾 Exportar mapa de mallas</button>
+        <button id="isolateSelectedBtn">👁 Aislar selección</button>
+        <button id="showAllMeshesBtn">◎ Mostrar todo</button>
+        <button id="loadMeshMapBtn">🧩 Importar mapa de mallas</button>
+        <input id="meshMapFile" type="file" accept=".csv,.json" hidden>
+        <button id="clearMeshMapBtn">↺ Restablecer mapa</button>
+        <div id="meshMapStatus" class="mesh-report">Mapa: reconocimiento automático</div>
+      </div>
+      <button class="structure" data-structure="craneo">Cráneo</button>
+      <button class="structure" data-structure="columna">Columna</button>
+      <button class="structure" data-structure="pelvis">Pelvis</button>
+      <button class="structure" data-structure="humero">Húmero</button>
+      <button class="structure" data-structure="femur">Fémur</button>
+      <button class="structure" data-structure="tibia">Tibia</button>
+    </aside>
+
+    <section class="viewer">
+      <canvas id="scene"></canvas>
+      <div class="top-hint"><span data-i18n="viewerHint">Arrastra para rotar · rueda/pellizco para zoom · toca un hueso para seleccionarlo</span></div>
+
+      <div class="zoom-levels">
+        <button id="levelBone" class="active" data-i18n="bone">Hueso</button>
+        <button id="levelTissue" data-i18n="tissue">Tejido</button>
+        <button id="levelCell" data-i18n="cell">Célula</button>
+      </div>
+
+      <div class="voice">
+        <button id="mic">🎙️</button>
+        <span id="voiceStatus">Di: “Muéstrame el fémur”</span>
+      </div>
+    </section>
+
+    <aside class="info">
+      <div class="card profile-card">
+        <strong>Perfil del estudiante</strong>
+        <input id="profileStudentName" class="search" placeholder="Nombre del estudiante">
+        <select id="unitSelect">
+          <option value="skeletal_basics">Unidad 1 · Sistema esquelético</option>
+          <option value="upper_limb">Unidad 2 · Miembro superior</option>
+          <option value="lower_limb">Unidad 3 · Miembro inferior</option>
+        </select>
+        <button id="saveProfileBtn">Guardar perfil</button>
+        <small id="profileStatus">Sin perfil guardado</small>
+      </div>
+
+      <div class="breadcrumb" id="breadcrumb">Sistema esquelético</div>
+      <h2 id="structureName">Sistema esquelético</h2>
+      <p id="description">Selecciona una estructura anatómica o utiliza el micrófono.</p>
+
+      <div class="card">
+        <strong>Exploración anatómica</strong>
+        <div class="detail-actions">
+          <button id="hideSelectedBtn">Ocultar selección</button>
+          <button id="xrayBtn">Modo transparente</button>
+        </div>
+        <p id="selectionDetails">Selecciona una estructura para ver detalles.</p>
+      </div>
+
+      <div class="card lesson-card">
+        <div class="speak-row">
+          <strong>Lección guiada</strong>
+          <button id="guidedLessonStartBtn">▶ Iniciar</button>
+        </div>
+        <p id="lessonText">Recorre una secuencia de estructuras y aprende su función.</p>
+        <div class="lesson-actions">
+          <button id="prevLessonBtn" disabled>← Anterior</button>
+          <button id="nextLessonBtn" disabled>Siguiente →</button>
+        </div>
+      </div>
+
+      <div class="card quiz-card">
+        <div class="speak-row">
+          <strong>Quiz anatómico</strong>
+          <button id="startQuizBtn">🧠 Empezar</button>
+        </div>
+        <p id="atlasQuizQuestion">Pon a prueba lo aprendido.</p>
+        <div id="atlasQuizAnswers" class="quiz-answers"></div>
+        <div class="quiz-meta">
+          <span id="quizScore">0 puntos</span>
+          <span id="quizProgress">0/0</span>
+        </div>
+      </div>
+
+      <div class="card learning-card">
+        <strong>Mi aprendizaje</strong>
+        <div class="progress-row"><span>Progreso del atlas</span><span id="atlasProgressText">0%</span></div>
+        <div class="progress-track"><div id="progressBar"></div></div>
+        <div class="stats">
+          <div><b id="visitedCount">0</b><small>estudiados</small></div>
+          <div><b id="favoriteCount">0</b><small>favoritos</small></div>
+        </div>
+        <button id="favoriteBtn">☆ Añadir a favoritos</button>
+        <button id="resetAtlasProgressBtn" class="secondary-action">Reiniciar progreso</button>
+      </div>
+
+      <div class="card">
+        <strong data-i18n="factsTitle">Datos</strong>
+        <p id="facts">El esqueleto humano adulto está formado normalmente por 206 huesos.</p>
+      </div>
+
+      <div class="card">
+        <div class="speak-row">
+          <strong data-i18n="voiceExplanation">Explicación por voz</strong>
+          <button id="speakBtn">🔊 <span data-i18n="listen">Escuchar</span></button>
+        </div>
+        <label class="voice-label"><span data-i18n="voice">Voz</span>
+          <select id="voiceSelect"></select>
+        </label>
+        <label class="voice-label"><span data-i18n="speed">Velocidad</span>
+          <input id="speechRate" type="range" min="0.7" max="1.3" value="1" step="0.1">
+        </label>
+      </div>
+
+      <div class="card teacher-card">
+        <strong>Panel docente</strong>
+        <p id="teacherSummary">Aún no hay resultados registrados.</p>
+        <button id="exportResultsBtn">⬇ Exportar resultados CSV</button>
+        <button id="exportJsonBtn">⬇ Exportar respaldo JSON</button>
+      </div>
+
+      <div class="card">
+        <strong data-i18n="voiceCommands">Comandos de voz</strong>
+        <p>“Muéstrame el cráneo”</p>
+        <p>“Muéstrame el fémur”</p>
+        <p>“Más cerca”</p>
+        <p>“Muéstrame el tejido óseo”</p>
+        <p>“Muéstrame una célula ósea”</p>
+        <p>“Vista completa”</p>
+      </div>
+    </aside>
+  </main>
+  <nav class="mobile-nav">
+    <button id="mobileAtlas">🦴<span>Atlas</span></button>
+    <button id="mobileMic">🎙️<span>Voz</span></button>
+    <button id="mobileInfo">ℹ️<span>Info</span></button>
+  </nav>
+
+  <script type="module" src="bootstrap.js"></script>
+<div id="licenseModal" class="license-modal" hidden>
+  <div class="license-card">
+    <button id="closeLicenseBtn" class="close-license">✕</button>
+    <h2>Licencia de modelos externos</h2>
+    <p><b>Bio3D no incluye en este paquete ningún modelo de Z-Anatomy.</b></p>
+    <p>El repositorio principal de Z-Anatomy declara su código y contenido bajo CC BY-SA 4.0 y exige atribución y ShareAlike para derivados. Su documentación también enumera algunos activos de terceros con licencias distintas, incluidas licencias no comerciales.</p>
+    <p>Por eso, antes de redistribuir un modelo concreto dentro de Bio3D, hay que revisar el activo exacto y sus atribuciones.</p>
+    <div class="attribution-box">
+      <b>Atribución preparada para activos compatibles:</b><br>
+      “Z-Anatomy - The libre 3D atlas of anatomy - CC BY-SA 4.0”<br>
+      “BodyParts3D - The Database Center for Life Science - CC BY-SA 2.1 Japan”
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,8 @@
+Bio3D v3.3 Offline Test — Static Audit
+=======================================
+app.js syntax: PASS
+bootstrap.js syntax: PASS
+sw.js syntax: PASS
+Duplicate HTML IDs: PASS
+Offline controls present: PASS
+Note: actual offline behavior must be verified in a real browser after one successful online load.

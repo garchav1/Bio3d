@@ -1,0 +1,11 @@
+Bio3D v3.1 Stable — Final Static Audit
+==========================================
+JavaScript syntax: PASS
+Unique HTML IDs: PASS
+Core UI controls: PASS
+Manifest: PASS
+Service worker: PASS
+Icons: PASS
+Classroom test plan: PASS
+
+Scope note: these are static/package checks. Real-device browser, microphone, GPU, touch, and classroom usability still require manual testing on the target device.

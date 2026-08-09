@@ -1,0 +1,9 @@
+Bio3D v3.4 Android PWA — Audit
+====================================
+app.js: PASS
+bootstrap.js: PASS
+sw.js: PASS
+Unique HTML IDs: PASS
+PWA manifest: PASS
+Install UI: PASS
+Note: actual Android installation requires hosting over HTTPS and testing in Chrome.

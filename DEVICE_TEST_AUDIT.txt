@@ -1,0 +1,6 @@
+Bio3D v3.2 Device Test — Static Audit
+======================================
+JavaScript syntax: PASS
+Duplicate HTML IDs: PASS
+Device test UI: PASS
+Manual device testing is still required for touch, microphone, GPU performance and classroom usability.
