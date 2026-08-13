@@ -1,7 +1,7 @@
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.164/build/three.module.js";
-import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.164/examples/jsm/controls/OrbitControls.js";
-import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.164/examples/jsm/loaders/GLTFLoader.js";
-import { FBXLoader } from "https://cdn.jsdelivr.net/npm/three@0.164/examples/jsm/loaders/FBXLoader.js";
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.164.0/+esm";
+import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.164.0/examples/jsm/controls/OrbitControls.js/+esm";
+import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.164.0/examples/jsm/loaders/GLTFLoader.js/+esm";
+import { FBXLoader } from "https://cdn.jsdelivr.net/npm/three@0.164.0/examples/jsm/loaders/FBXLoader.js/+esm";
 
 window.addEventListener("error",e=>{
   console.error("Bio3D runtime error:",e.error||e.message);
